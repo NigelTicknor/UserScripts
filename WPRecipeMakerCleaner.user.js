@@ -10,8 +10,14 @@
 
 (function() {
     'use strict';
-    let us_wp_recipes = document.getElementsByClassName('wprm-recipe-container');
-    if(us_wp_recipes.length > 0){
-        document.body.innerHTML = us_wp_recipes[0].outerHTML;
-    }
+	let recipeClasses = [
+		'wprm-recipe-container',
+		'tasty-recipes'
+	];
+	recipeClasses.forEach((e)=>{
+		let foundClasses = document.getElementsByClassName(e);
+		if(foundClasses.length > 0) {
+			document.body.innerHTML = foundClasses[0].outerHTML;
+		}
+	});
 })();
