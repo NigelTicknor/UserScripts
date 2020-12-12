@@ -12,7 +12,8 @@
     'use strict';
 	let recipeClasses = [
 		'wprm-recipe-container',
-		'tasty-recipes'
+		'tasty-recipes',
+		'mv-recipe-card'
 	];
 	recipeClasses.forEach((e)=>{
 		let foundClasses = document.getElementsByClassName(e);
