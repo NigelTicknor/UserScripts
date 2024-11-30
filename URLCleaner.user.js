@@ -17,9 +17,10 @@
         let urlstuff = window.location.href.split('/');
         let dpind = urlstuff.indexOf('dp');
         if(dpind>-1&&dpind<urlstuff.length-1){
+            let fixed = urlstuff[dpind+1].split('?')
             history.pushState({
                 id: 'product'
-            }, null, '/dp/'+urlstuff[dpind+1]);
+            }, null, '/dp/'+fixed[0]);
         }
     }else if(window.location.hostname=='www.ebay.com'){
         console.log('test');
