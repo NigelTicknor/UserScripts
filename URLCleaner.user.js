@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         URL Cleaner
 // @namespace    https://www.ticknorn.com
-// @version      0.1
+// @version      0.5
 // @description  Clean URLs for easy sharing
 // @author       You
 // @match        https://www.amazon.com/*
@@ -13,24 +13,53 @@
 (function() {
     'use strict';
 
-    if(window.location.hostname=='www.amazon.com'||window.location.hostname=='www.amazon.co.jp'){
-        let urlstuff = window.location.href.split('/');
-        let dpind = urlstuff.indexOf('dp');
-        if(dpind>-1&&dpind<urlstuff.length-1){
-            let fixed = urlstuff[dpind+1].split('?')
-            history.pushState({
-                id: 'product'
-            }, null, '/dp/'+fixed[0]);
-        }
-    }else if(window.location.hostname=='www.ebay.com'){
-        console.log('test');
-        let urlstuff = window.location.href.split('/');
-        let itmind = urlstuff.indexOf('itm');
-        if(itmind>-1&&itmind<urlstuff.length-1){
-            history.pushState({
-                id: 'product'
-            }, null, '/itm/'+urlstuff[itmind+2].split('?')[0]);
+    function cleanUrl() {
+        const hostname = window.location.hostname;
+        const href = window.location.href;
+
+        if (hostname === 'www.amazon.com' || hostname === 'www.amazon.co.jp') {
+            const urlParts = href.split('/');
+            const dpIndex = urlParts.indexOf('dp');
+
+            if (dpIndex > -1 && dpIndex < urlParts.length - 1) {
+                const productId = urlParts[dpIndex + 1].split('?')[0]; // Remove query params too
+                const newUrl = window.location.origin + '/dp/' + productId;
+
+                if (window.location.href !== newUrl) {
+                    try {
+                        window.history.replaceState(null, null, newUrl);
+                    } catch (e) {
+                        console.log('Could not clean URL:', e);
+                    }
+                }
+            }
+        } else if (hostname === 'www.ebay.com') {
+            const urlParts = href.split('/');
+            const itmIndex = urlParts.indexOf('itm');
+
+            if (itmIndex > -1 && itmIndex < urlParts.length - 1) {
+                const itemId = urlParts[itmIndex + 1].split('?')[0];
+                const newUrl = window.location.origin + '/itm/' + itemId;
+
+                if (window.location.href !== newUrl) {
+                    try {
+                        window.history.replaceState(null, null, newUrl);
+                    } catch (e) {
+                        console.log('Could not clean URL:', e);
+                    }
+                }
+            }
         }
     }
+
+    // Try multiple approaches for different scenarios
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', cleanUrl);
+    } else {
+        cleanUrl();
+    }
+
+    // Also run after a short delay to catch dynamic loads
+    setTimeout(cleanUrl, 1000);
 
 })();
